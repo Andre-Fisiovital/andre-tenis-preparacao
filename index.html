@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Semana Tenis - Andre</title>
+  <style>
+    :root {
+      --ink: #17201a;
+      --muted: #657064;
+      --line: #d9e2d8;
+      --paper: #fbfcf8;
+      --panel: #ffffff;
+      --green: #2f7d46;
+      --blue: #286f9c;
+      --amber: #b36b15;
+      --red: #a84535;
+      --soft-green: #e9f4eb;
+      --soft-blue: #e8f2f8;
+      --soft-amber: #fff2df;
+      --soft-red: #fae9e5;
+      --shadow: 0 8px 24px rgba(23, 32, 26, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font: 16px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: inherit; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: rgba(251, 252, 248, .94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .bar {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 18px 16px 48px;
+    }
+
+    section { margin: 0 0 22px; }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    p { margin: 0 0 10px; }
+
+    .note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .summary {
+      padding: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      min-height: 74px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 22px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      padding: 9px 12px;
+      font: inherit;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--green);
+      color: #fff;
+      border-color: var(--green);
+    }
+
+    .day {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .day.active { display: block; }
+
+    .day-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.green { background: var(--soft-green); color: var(--green); }
+    .badge.blue { background: var(--soft-blue); color: var(--blue); }
+    .badge.amber { background: var(--soft-amber); color: var(--amber); }
+    .badge.red { background: var(--soft-red); color: var(--red); }
+
+    .blocks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .block, .exercise, .form-panel, .log-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 4px 16px rgba(23, 32, 26, .05);
+    }
+
+    .block ul, .exercise ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }
+
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .exercise {
+      min-height: 176px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .exercise .meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .exercise a {
+      margin-top: auto;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      background: #f8faf6;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button.action {
+      border: 0;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--green);
+      min-height: 42px;
+      padding: 9px 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: var(--blue);
+    }
+
+    button.danger {
+      background: var(--red);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th { color: var(--muted); font-size: 12px; }
+
+    .today {
+      border-left: 4px solid var(--green);
+    }
+
+    @media (max-width: 820px) {
+      .hero, .blocks, .exercise-grid, .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .status {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .day-head {
+        grid-template-columns: 1fr;
+      }
+
+      .bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <h1>Semana Tenis - Andre</h1>
+      <div class="date">Plano: 25 a 31/05/2026</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="summary">
+        <h2>Logica da semana</h2>
+        <p>Voce quer treinar academia segunda, quarta e sexta. Entao a semana fica com forca nesses dias, mas ajustada ao tenis: segunda tem perna com controle, quarta tem tronco/braco e pre-ranking, sexta depende da resposta ao jogo de quinta.</p>
+        <p class="note">Terca tem 1 set. Quinta tem jogo do ranking as 6h. Nesses dois dias, o tenis e o treino principal.</p>
+      </div>
+      <div class="status">
+        <div class="metric"><strong>3</strong><span>academias planejadas</span></div>
+        <div class="metric"><strong>2</strong><span>dias de tenis competitivo</span></div>
+        <div class="metric"><strong>RPE 7</strong><span>teto nos treinos de forca</span></div>
+        <div class="metric"><strong>0</strong><span>perna pesada na vespera do ranking</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Dias da semana</h2>
+      <div class="tabs" role="tablist" aria-label="Dias">
+        <button class="tab" role="tab" aria-selected="true" data-day="seg">Seg 25</button>
+        <button class="tab" role="tab" aria-selected="false" data-day="ter">Ter 26</button>
+        <button class="tab" role="tab" aria-selected="false" data-day="qua">Qua 27</button>
+        <button class="tab" role="tab" aria-selected="false" data-day="qui">Qui 28</button>
+        <button class="tab" role="tab" aria-selected="false" data-day="sex">Sex 29</button>
+        <button class="tab" role="tab" aria-selected="false" data-day="sab">Sab 30</button>
+        <button class="tab" role="tab" aria-selected="false" data-day="dom">Dom 31</button>
+      </div>
+
+      <article class="day active" id="seg">
+        <div class="day-head today">
+          <div>
+            <h2>Segunda: academia + aula</h2>
+            <p>Treino de forca principal da semana, mas sem destruir a perna antes da aula e do set de terca.</p>
+          </div>
+          <span class="badge green">Forca A controlada</span>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <h3>Academia antes da aula, 35-45 min</h3>
+            <ul>
+              <li>Bike leve: 4 min</li>
+              <li>Mobilidade tornozelo/quadril: 3 min</li>
+              <li>Leg press ou goblet squat: 3 x 6-8, RPE 7</li>
+              <li>Levantamento romeno: 3 x 8</li>
+              <li>Step-up ou passada reversa: 2 x 8 cada perna</li>
+              <li>Panturrilha em pe: 2 x 12</li>
+              <li>Pallof press: 2 x 10 cada lado</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Aula de tenis</h3>
+            <ul>
+              <li>Foco: tecnica, controle e ritmo.</li>
+              <li>Evitar disputar todo ponto como final.</li>
+              <li>Se a perna pesar, diminuir intensidade na aula.</li>
+              <li>Depois: 5 min caminhada + mobilidade leve.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="day" id="ter">
+        <div class="day-head">
+          <div>
+            <h2>Terca: 1 set</h2>
+            <p>Nao e dia de academia pesada. Use o set como treino de intensidade e footwork.</p>
+          </div>
+          <span class="badge amber">Tenis principal</span>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <h3>Ativacao, 12-15 min</h3>
+            <ul>
+              <li>Caminhada rapida ou bike: 4 min</li>
+              <li>Avanco com rotacao: 6 cada lado</li>
+              <li>Mini band lateral: 2 x 10 passos</li>
+              <li>Split step + saida direita/esquerda: 3 x 10 s</li>
+              <li>2 aceleracoes curtas antes de jogar</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Foco do set</h3>
+            <ul>
+              <li>Split antes da bola.</li>
+              <li>Recuperar depois da bola.</li>
+              <li>Nao morrer em bola perdida.</li>
+              <li>Registrar duracao, RPE, dor e energia.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="day" id="qua">
+        <div class="day-head">
+          <div>
+            <h2>Quarta: academia de estetica + protecao</h2>
+            <p>Como quinta tem ranking as 6h, quarta nao tem perna pesada. E o melhor dia para peito, costas, braco e ombro saudavel.</p>
+          </div>
+          <span class="badge blue">Upper + prehab</span>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <h3>Treino, 45-55 min</h3>
+            <ul>
+              <li>Supino halter ou maquina: 3 x 8-10</li>
+              <li>Remada baixa ou unilateral: 3 x 8-10</li>
+              <li>Puxada frente: 2 x 10-12</li>
+              <li>Elevacao lateral: 2 x 12-15</li>
+              <li>Rosca martelo: 2 x 10-12</li>
+              <li>Triceps corda: 2 x 10-12</li>
+              <li>Face pull: 2 x 12-15</li>
+              <li>Rotacao externa elastico: 2 x 15</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Regra de quarta</h3>
+            <ul>
+              <li>Nao treinar braco ate falhar.</li>
+              <li>Nao fazer ombro pesado acima da cabeca.</li>
+              <li>Se tiver aula de tenis, ela deve ser tecnica/controlada.</li>
+              <li>Dormir bem vale mais que volume extra.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="day" id="qui">
+        <div class="day-head">
+          <div>
+            <h2>Quinta: jogo do ranking 6h</h2>
+            <p>Esse e o dia de performance. Sem musculacao antes. Sem tiro depois.</p>
+          </div>
+          <span class="badge red">Competicao</span>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <h3>Aquecimento, 15-18 min</h3>
+            <ul>
+              <li>5 min caminhada rapida/trote leve</li>
+              <li>Mobilidade quadril + tornozelo: 2 min</li>
+              <li>Mini band lateral: 2 x 10 passos</li>
+              <li>Panturrilha rapida: 2 x 12</li>
+              <li>Split step + saidas: 4 x 10 s</li>
+              <li>3 aceleracoes curtas</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Depois do jogo</h3>
+            <ul>
+              <li>Caminhar 5 min.</li>
+              <li>Mobilidade 5-8 min.</li>
+              <li>Carbo + proteina no cafe da manha.</li>
+              <li>Registrar se o segundo set caiu ou sustentou.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="day" id="sex">
+        <div class="day-head">
+          <div>
+            <h2>Sexta: academia ajustavel + aula</h2>
+            <p>A decisao depende do jogo de quinta. Se acordar bem, faz Forca B. Se acordar pesado, faz versao leve.</p>
+          </div>
+          <span class="badge green">Forca B adaptavel</span>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <h3>Versao verde, 45-55 min</h3>
+            <ul>
+              <li>Saltos laterais baixos: 3 x 5 cada lado</li>
+              <li>Cable chop ou medicine ball: 3 x 6 cada lado</li>
+              <li>Hip thrust ou mesa flexora: 3 x 8-10</li>
+              <li>Remada unilateral: 3 x 8-10</li>
+              <li>Supino maquina/halter: 2 x 8-10</li>
+              <li>Adutor maquina: 2 x 12</li>
+              <li>Rosca alternada + triceps corda: 2 x 10 cada</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Versao amarela, 25-35 min</h3>
+            <ul>
+              <li>Bike zona 2: 15-20 min</li>
+              <li>Mobilidade quadril/posterior: 6 min</li>
+              <li>Face pull: 2 x 15</li>
+              <li>Rotacao externa: 2 x 15</li>
+              <li>Core leve: dead bug 2 x 8 cada lado</li>
+              <li>Aula de tenis tecnica, sem extra.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="day" id="sab">
+        <div class="day-head">
+          <div>
+            <h2>Sabado: jogo ou treino</h2>
+            <p>Se jogar 2 sets, conte como carga alta. Se o ranking de quinta foi muito pesado, jogar com mais inteligencia.</p>
+          </div>
+          <span class="badge amber">Carga conforme corpo</span>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <h3>Antes</h3>
+            <ul>
+              <li>10-15 min aquecimento dinamico.</li>
+              <li>3 split steps com saida lateral.</li>
+              <li>1 banana ou carbo leve se acordar vazio.</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Depois</h3>
+            <ul>
+              <li>Mobilidade curta.</li>
+              <li>Hidratacao.</li>
+              <li>Registrar RPE e dor.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="day" id="dom">
+        <div class="day-head">
+          <div>
+            <h2>Domingo: jogar ou recuperar</h2>
+            <p>Domingo e flexivel. Se sabado foi pesado, nao precisa provar nada no domingo.</p>
+          </div>
+          <span class="badge blue">Flexivel</span>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <h3>Se estiver bem</h3>
+            <ul>
+              <li>Jogo controlado ou 2 sets.</li>
+              <li>Evitar prolongar se a perna morrer.</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Se estiver pesado</h3>
+            <ul>
+              <li>Bike zona 2: 30-40 min.</li>
+              <li>Mobilidade: 10 min.</li>
+              <li>Sem musculacao.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section>
+      <h2>Exercicios com video</h2>
+      <div class="exercise-grid">
+        <div class="exercise">
+          <h3>Leg press ou goblet squat</h3>
+          <div class="meta">3 x 6-8, RPE 7, descanso 90 s</div>
+          <p>Descer controlado, subir forte, joelho alinhado com o pe.</p>
+          <a href="https://www.youtube.com/results?search_query=goblet+squat+proper+form" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+        <div class="exercise">
+          <h3>Levantamento romeno</h3>
+          <div class="meta">3 x 8, descanso 90 s</div>
+          <p>Quadril vai para tras, coluna neutra, sentir posterior sem arredondar as costas.</p>
+          <a href="https://www.youtube.com/results?search_query=romanian+deadlift+proper+form" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+        <div class="exercise">
+          <h3>Step-up</h3>
+          <div class="meta">2 x 8 cada perna</div>
+          <p>Subir empurrando o banco com a perna da frente, sem impulso exagerado.</p>
+          <a href="https://www.youtube.com/results?search_query=step+up+exercise+proper+form" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+        <div class="exercise">
+          <h3>Pallof press</h3>
+          <div class="meta">2 x 10 cada lado</div>
+          <p>Anti-rotacao: o cabo/elastico quer te girar, voce resiste.</p>
+          <a href="https://www.youtube.com/results?search_query=pallof+press+proper+form" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+        <div class="exercise">
+          <h3>Face pull</h3>
+          <div class="meta">2 x 12-15</div>
+          <p>Cotovelo alto, puxar para o rosto, foco em escapula e posterior de ombro.</p>
+          <a href="https://www.youtube.com/results?search_query=face+pull+proper+form" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+        <div class="exercise">
+          <h3>Rotacao externa</h3>
+          <div class="meta">2 x 15 cada lado</div>
+          <p>Cotovelo colado ao corpo, carga leve, movimento limpo.</p>
+          <a href="https://www.youtube.com/results?search_query=band+external+rotation+shoulder+exercise" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+        <div class="exercise">
+          <h3>Saltos laterais baixos</h3>
+          <div class="meta">3 x 5 cada lado</div>
+          <p>Aterrissar macio, estabilizar 1 s, nao transformar em cardio.</p>
+          <a href="https://www.youtube.com/results?search_query=lateral+skater+jump+proper+form" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+        <div class="exercise">
+          <h3>Cable chop</h3>
+          <div class="meta">3 x 6 cada lado</div>
+          <p>Rotacao de tronco com quadril firme, explosivo mas controlado.</p>
+          <a href="https://www.youtube.com/results?search_query=cable+wood+chop+proper+form" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+        <div class="exercise">
+          <h3>Split step + saida</h3>
+          <div class="meta">4 x 10 s</div>
+          <p>Pequeno salto, cair pronto, primeira passada agressiva.</p>
+          <a href="https://www.youtube.com/results?search_query=tennis+split+step+first+step+drill" target="_blank" rel="noreferrer">Ver video</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Registro do treino</h2>
+      <div class="form-panel">
+        <div class="form-grid">
+          <label>Data
+            <input id="logDate" type="date">
+          </label>
+          <label>Tipo
+            <select id="logType">
+              <option>Academia</option>
+              <option>Aula tenis</option>
+              <option>Jogo ranking</option>
+              <option>1 set</option>
+              <option>Bike/mobilidade</option>
+              <option>Descanso</option>
+            </select>
+          </label>
+          <label>Duracao min
+            <input id="logMinutes" type="number" min="0" step="1" placeholder="60">
+          </label>
+          <label>RPE 1-10
+            <input id="logRpe" type="number" min="1" max="10" step="1" placeholder="7">
+          </label>
+          <label>Dor 0-10
+            <input id="logPain" type="number" min="0" max="10" step="1" placeholder="2">
+          </label>
+          <label>Energia
+            <select id="logEnergy">
+              <option>Alta</option>
+              <option>Media</option>
+              <option>Baixa</option>
+            </select>
+          </label>
+          <label>Perna
+            <select id="logLegs">
+              <option>Leve</option>
+              <option>Ok</option>
+              <option>Pesada</option>
+            </select>
+          </label>
+          <label>Segundo set
+            <select id="logSecondSet">
+              <option>Nao teve</option>
+              <option>Sustentou bem</option>
+              <option>Caiu um pouco</option>
+              <option>Morreu</option>
+            </select>
+          </label>
+        </div>
+        <label style="margin-top:10px;">Notas
+          <textarea id="logNotes" placeholder="Ex: dormi mal, perna boa, saque cansou ombro, comi banana antes..."></textarea>
+        </label>
+        <div class="actions">
+          <button class="action" id="saveLog" type="button">Salvar registro</button>
+          <button class="action secondary" id="exportLog" type="button">Exportar CSV</button>
+          <button class="action danger" id="clearLog" type="button">Limpar registros</button>
+        </div>
+        <p class="note" id="feedback">Carga da sessao = duracao x RPE. Dor 4-5 pede controle; dor 6+ pede recuperacao.</p>
+      </div>
+      <div class="log-panel" style="margin-top:12px; overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Tipo</th>
+              <th>Min</th>
+              <th>RPE</th>
+              <th>Carga</th>
+              <th>Dor</th>
+              <th>Energia</th>
+              <th>Perna</th>
+              <th>2o set</th>
+              <th>Notas</th>
+            </tr>
+          </thead>
+          <tbody id="logRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const storageKey = "andre-tenis-semana-2026-05-25";
+
+    function todayIso() {
+      const d = new Date();
+      const off = d.getTimezoneOffset();
+      return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
+    }
+
+    function loadLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function saveLogs(logs) {
+      localStorage.setItem(storageKey, JSON.stringify(logs));
+    }
+
+    function renderLogs() {
+      const rows = document.getElementById("logRows");
+      const logs = loadLogs();
+      rows.innerHTML = "";
+      if (!logs.length) {
+        rows.innerHTML = "<tr><td colspan='10' class='note'>Nenhum registro salvo ainda.</td></tr>";
+        return;
+      }
+      logs.slice().reverse().forEach((log) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(log.date)}</td>
+          <td>${escapeHtml(log.type)}</td>
+          <td>${escapeHtml(log.minutes)}</td>
+          <td>${escapeHtml(log.rpe)}</td>
+          <td>${escapeHtml(log.load)}</td>
+          <td>${escapeHtml(log.pain)}</td>
+          <td>${escapeHtml(log.energy)}</td>
+          <td>${escapeHtml(log.legs)}</td>
+          <td>${escapeHtml(log.secondSet)}</td>
+          <td>${escapeHtml(log.notes)}</td>
+        `;
+        rows.appendChild(tr);
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? "");
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+
+    document.querySelectorAll(".tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((tab) => tab.setAttribute("aria-selected", "false"));
+        document.querySelectorAll(".day").forEach((day) => day.classList.remove("active"));
+        button.setAttribute("aria-selected", "true");
+        document.getElementById(button.dataset.day).classList.add("active");
+      });
+    });
+
+    document.getElementById("logDate").value = todayIso();
+
+    document.getElementById("saveLog").addEventListener("click", () => {
+      const minutes = Number(document.getElementById("logMinutes").value || 0);
+      const rpe = Number(document.getElementById("logRpe").value || 0);
+      const pain = Number(document.getElementById("logPain").value || 0);
+      const log = {
+        date: document.getElementById("logDate").value || todayIso(),
+        type: document.getElementById("logType").value,
+        minutes,
+        rpe,
+        load: minutes * rpe,
+        pain,
+        energy: document.getElementById("logEnergy").value,
+        legs: document.getElementById("logLegs").value,
+        secondSet: document.getElementById("logSecondSet").value,
+        notes: document.getElementById("logNotes").value.trim()
+      };
+      const logs = loadLogs();
+      logs.push(log);
+      saveLogs(logs);
+      renderLogs();
+      const advice = pain >= 6 ? "Dor 6+: amanha deve ser recuperacao." : pain >= 4 ? "Dor 4-5: proximo treino controlado." : "Dor ok: pode seguir o plano se a energia estiver boa.";
+      document.getElementById("feedback").textContent = `Registro salvo. Carga ${log.load}. ${advice}`;
+      document.getElementById("logMinutes").value = "";
+      document.getElementById("logRpe").value = "";
+      document.getElementById("logPain").value = "";
+      document.getElementById("logNotes").value = "";
+    });
+
+    document.getElementById("exportLog").addEventListener("click", () => {
+      const logs = loadLogs();
+      const header = ["data","tipo","minutos","rpe","carga","dor","energia","perna","segundo_set","notas"];
+      const body = logs.map((log) => [
+        log.date, log.type, log.minutes, log.rpe, log.load, log.pain, log.energy, log.legs, log.secondSet, log.notes
+      ].map(csvEscape).join(","));
+      const csv = [header.join(","), ...body].join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "registro-semana-tenis-andre.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("clearLog").addEventListener("click", () => {
+      if (!confirm("Limpar todos os registros salvos neste navegador?")) return;
+      saveLogs([]);
+      renderLogs();
+      document.getElementById("feedback").textContent = "Registros limpos.";
+    });
+
+    renderLogs();
+  </script>
+</body>
+</html>
